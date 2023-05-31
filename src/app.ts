@@ -1,6 +1,7 @@
 import express, { Request, Response } from "express";
 import dotenv from "dotenv";
 import registerInternalUser from "./routes/register-internal-user";
+import loginInternalUserRouter from "./routes/login-internal-user";
 
 dotenv.config();
 
@@ -12,7 +13,12 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // Routes
+app.get("/", (req: Request, res: Response) => {
+  res.send("Hello World!");
+});
+
 app.use("/register-internal-user", registerInternalUser);
+app.use("/login-internal-user", loginInternalUserRouter);
 
 // Start server
 app.listen(port, () => {

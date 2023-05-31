@@ -1,70 +1,44 @@
 import { Router, Request, Response, NextFunction } from "express";
 import bcrypt from "bcrypt";
-import db from "../../config/db";
+import executeQuery from "../../config/db/db-executer";
+
+import {
+  usernameFormatMiddleware,
+  usernameAvailabilityMiddleware,
+} from "../../middlewares/user";
 
 const registerInternalUserRouter = Router();
 
 registerInternalUserRouter.post(
   "/",
   usernameFormatMiddleware,
-  (req: Request, res: Response) => {
-    const { fname, lname, username, password, type_id } = req.body;
-    res.send("Hello, User!");
+  usernameAvailabilityMiddleware,
+  async (req: Request, res: Response) => {
+    try {
+      const { fname, lname, username, password, type_id } = req.body;
+      const hashedPassword = await encrypt(password);
+      const queryResponse = await executeQuery(
+        `INSERT INTO internal_user (fname, lname, username, password, type_id) VALUES ('${fname}', '${lname}', '${username}', '${hashedPassword}', ${type_id})`
+      );
+      console.log("Added a new user: ", queryResponse);
+      res.status(201).send({ message: "User added successfully" });
+    } catch (error) {
+      console.log("error", error);
+      res.status(500).send("Internal Server Error.");
+    }
   }
 );
 
 function encrypt(password: string, rounds: number = 10) {
-  bcrypt.hash(password, rounds, (err, hash) => {
-    if (err) {
-      console.log(err);
-    } else {
-      return hash;
-    }
+  return new Promise((resolve, reject) => {
+    bcrypt.hash(password, rounds, (err, hash) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(hash);
+      }
+    });
   });
 }
 
-function validateUsername(username: string): boolean {
-  const usernameRegex = /^[a-zA-Z0-9_-]{3,20}$/;
-  return usernameRegex.test(username);
-}
-
-function usernameFormatMiddleware(
-  req: Request,
-  res: Response,
-  next: NextFunction
-) {
-  const { username } = req.body;
-  if (!validateUsername(username)) {
-    res.status(500).send({ message: "555 eh da" });
-  } else {
-    next();
-  }
-}
-
-function usernameAvailabilityMiddleware(
-  req: Request,
-  res: Response,
-  next: NextFunction
-) {
-  const { username } = req.body;
-  if (!validateUsername(username)) {
-    res.status(500).send({ message: "555 eh da" });
-  } else {
-    next();
-  }
-}
-
-function isUsernameAlreadyExists(username: string): boolean {
-  db.query(
-    `SELECT COUNT(*) FROM internal_user WHERE username = '${username}'`,
-    (err, res) => {
-      // console.log(err);
-      console.log(res);
-    }
-  );
-  // console.log(db);
-  return true;
-}
-
-isUsernameAlreadyExists("j.Doe");
 export default registerInternalUserRouter;
