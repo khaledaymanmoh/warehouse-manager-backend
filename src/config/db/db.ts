@@ -9,6 +9,5 @@ const db = createConnection({
   database: process.env.DB,
 });
 
-console.log("sdsdsd", process.env.DB);
 
 export default db;
