@@ -1,6 +1,6 @@
 import db from "./db";
 
-const executeQuery = (query: string) => {
+const executeQuery = (query: string): Promise<any[]> => {
   return new Promise((resolve, reject) => {
     db.query(query, (err, result) => {
       if (err) {

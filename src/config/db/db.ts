@@ -9,5 +9,4 @@ const db = createConnection({
   database: process.env.DB,
 });
 
-
 export default db;

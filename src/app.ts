@@ -1,6 +1,7 @@
 import express, { Request, Response } from "express";
 import dotenv from "dotenv";
 import userRouter from "./routes/users";
+import itemRouter from "./routes/item";
 
 dotenv.config();
 
@@ -16,9 +17,8 @@ app.get("/", (req: Request, res: Response) => {
   res.send("Hello World!");
 });
 
-
-app.use("/users", userRouter)
-
+app.use("/users", userRouter);
+app.use("/item", itemRouter);
 
 // Start server
 app.listen(port, () => {
