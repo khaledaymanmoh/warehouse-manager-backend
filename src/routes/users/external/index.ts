@@ -2,7 +2,7 @@
 import { Router, Request, Response, NextFunction } from "express";
 import bcrypt from "bcrypt";
 import executeQuery from "../../../config/db/db-executer";
-import { usernameAvailabilityMiddleware, usernameFormatMiddleware } from "../../../middlewares/user";
+import { externalUsernameAvailabilityMiddleware, externalUsernameExistMiddleware, internalUsernameExistMiddleware, usernameFormatMiddleware } from "../../../middlewares/user";
 import { encrypt } from "../../../utils/helperFunctions";
 
 const externalRouter = Router();
@@ -45,7 +45,7 @@ externalRouter.post("/login", async (req: Request, res: Response) => {
 externalRouter.post(
     "/register",
     usernameFormatMiddleware,
-    usernameAvailabilityMiddleware,
+    externalUsernameAvailabilityMiddleware,
     async (req: Request, res: Response) => {
         try {
             const { fname, lname, username, password, type_id, company_id } = req.body;
@@ -53,7 +53,6 @@ externalRouter.post(
             const queryResponse = await executeQuery(
                 `INSERT INTO user (fname, lname, username, password, type_id, company_id) VALUES ('${fname}', '${lname}', '${username}', '${hashedPassword}', ${type_id}, ${company_id})`
             );
-            console.log("Added a new user: ", queryResponse);
             res.status(201).send({ message: "User added successfully" });
         } catch (error) {
             console.log("error", error);
@@ -61,6 +60,20 @@ externalRouter.post(
         }
     }
 );
+
+externalRouter.delete("/delete", externalUsernameExistMiddleware, async (req: Request, res: Response) => {
+    //TODO: Add security Layer to accept user deletion
+    try {
+        const { username } = req.body;
+        const queryResponse = await executeQuery(
+            `DELETE FROM user WHERE username ='${username}'`
+        );
+        res.status(201).send({ message: "User deleted successfully" });
+    } catch (error) {
+        console.log("error", error);
+        res.status(500).send("Internal Server Error.");
+    }
+})
 
 
 

@@ -20,7 +20,7 @@ app.get("/", (req: Request, res: Response) => {
 app.use("/users", userRouter)
 
 
-// Start server
+// Start server 
 app.listen(port, () => {
   console.log(`Server started on port ${port}`);
 });
