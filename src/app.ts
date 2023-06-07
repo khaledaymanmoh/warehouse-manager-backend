@@ -1,5 +1,6 @@
-import express, { Request, Response } from 'express';
-import dotenv from 'dotenv';
+import express, { Request, Response } from "express";
+import dotenv from "dotenv";
+import userRouter from "./routes/users";
 
 dotenv.config();
 
@@ -11,15 +12,13 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // Routes
-app.get('/', (req: Request, res: Response) => {
-  res.send('Hello, TypeScript!');
+app.get("/", (req: Request, res: Response) => {
+  res.send("Hello World!");
 });
 
-// Error handling middleware
-app.use((err: Error, req: Request, res: Response) => {
-  console.error(err.stack);
-  res.status(500).send('Something broke!');
-});
+
+app.use("/users", userRouter)
+
 
 // Start server
 app.listen(port, () => {
