@@ -1,9 +1,9 @@
 import { Router, Request, Response } from "express";
 import executeQuery from "../../config/db/db-executer";
 
-const router = Router();
+const itemRouter = Router();
 
-router.get("/", async (req: Request, res: Response) => {
+itemRouter.get("/", async (req: Request, res: Response) => {
   try {
     const result = await executeQuery("SELECT * FROM item");
     res.send(result);
@@ -13,7 +13,7 @@ router.get("/", async (req: Request, res: Response) => {
   }
 });
 
-router.get("/:id", async (req: Request, res: Response) => {
+itemRouter.get("/:id", async (req: Request, res: Response) => {
   try {
     const result = await executeQuery(
       "SELECT * FROM item WHERE id = " + req.params.id
@@ -28,7 +28,7 @@ router.get("/:id", async (req: Request, res: Response) => {
   }
 });
 
-router.post("/", async (req: Request, res: Response) => {
+itemRouter.post("/", async (req: Request, res: Response) => {
   const {
     name,
     category_id,
@@ -49,7 +49,7 @@ router.post("/", async (req: Request, res: Response) => {
   }
 });
 
-router.put("/:id", async (req: Request, res: Response) => {
+itemRouter.put("/:id", async (req: Request, res: Response) => {
   const {
     name,
     category_id,
@@ -73,7 +73,7 @@ router.put("/:id", async (req: Request, res: Response) => {
   }
 });
 
-router.delete("/:id", async (req: Request, res: Response) => {
+itemRouter.delete("/:id", async (req: Request, res: Response) => {
   try {
     const result = await executeQuery(
       "SELECT * FROM item WHERE id = " + req.params.id
@@ -89,4 +89,4 @@ router.delete("/:id", async (req: Request, res: Response) => {
   }
 });
 
-export default router;
+export default itemRouter;
