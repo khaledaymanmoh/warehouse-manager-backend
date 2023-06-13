@@ -11,4 +11,3 @@ export function encrypt(password: string, rounds: number = 10) {
     });
   });
 }
-
