@@ -2,12 +2,15 @@ import { Router, Request, Response, NextFunction } from "express";
 import executeQuery from "../config/db/db-executer";
 import { encrypt } from "../utils/helperFunctions";
 
+
+
+
 function validateUsername(username: string): boolean {
   const usernameRegex = /^[a-zA-Z0-9_.-]{3,20}$/;
   return usernameRegex.test(username);
 }
 
-export async function updateUser(tableName: string, username: string, lname: string, fname: string, password: string, Id: string, company_id?: string) {
+export async function updateUser(tableName: "user" | "internal_user", username: string, lname: string, fname: string, password: string, Id: string, company_id?: string) {
   if (username || lname || fname || password || company_id) {
     const encryptedPassword = password ? await encrypt(password) : ""
     const columnsUpdated = `${username ? `username = '${username}',` : ""} ${fname ? `fname = '${fname}',` : ""} ${lname ? `lname = '${lname}',` : ""} ${password ? `password = '${encryptedPassword}',` : ""} ${company_id ? `company_id = '${company_id}',` : ""}`
