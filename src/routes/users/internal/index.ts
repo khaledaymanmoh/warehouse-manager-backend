@@ -68,12 +68,11 @@ internalRouter.put('/:id', internalUserIdExistMiddleware, async (req: Request, r
   const userId = req.params.id;
   const { username, lname, fname, password } = req.body;
   if (username || lname || fname || password) {
-    await updateUser(username, lname, fname, password, userId)
+    await updateUser("internal_user", username, lname, fname, password, userId)
     res.json({ message: 'User updated successfully', userId });
   } else {
     res.send("Please 7ot data yasta ")
   }
-
 });
 
 

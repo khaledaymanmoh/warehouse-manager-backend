@@ -2,7 +2,7 @@
 import { Router, Request, Response, NextFunction } from "express";
 import bcrypt from "bcrypt";
 import executeQuery from "../../../config/db/db-executer";
-import { externalUsernameAvailabilityMiddleware, externalUsernameExistMiddleware, internalUsernameExistMiddleware, usernameFormatMiddleware } from "../../../middlewares/user";
+import { externalUserIdExistMiddleware, externalUsernameAvailabilityMiddleware, externalUsernameExistMiddleware, updateUser, usernameFormatMiddleware } from "../../../middlewares/user";
 import { encrypt } from "../../../utils/helperFunctions";
 
 const externalRouter = Router();
@@ -74,6 +74,17 @@ externalRouter.delete("/delete", externalUsernameExistMiddleware, async (req: Re
         res.status(500).send("Internal Server Error.");
     }
 })
+
+externalRouter.put('/:id', externalUserIdExistMiddleware, async (req: Request, res: Response) => {
+    const userId = req.params.id;
+    const { username, lname, fname, password } = req.body;
+    if (username || lname || fname || password) {
+        await updateUser("user", username, lname, fname, password, userId)
+        res.json({ message: 'User updated successfully', userId });
+    } else {
+        res.send("Please 7ot data yasta ")
+    }
+});
 
 
 
